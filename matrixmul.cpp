@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 
-void Mat(int d[],int n) 
+void Matrix(int d[],int n) 
 {
   int a[n][n],b[n],min,count=0;
   bool var[n];
@@ -67,7 +67,7 @@ int main()
   int a[n][2];
   int d[n+1];
 
-  cout<<"Enter the size of the matrices in order\n";
+  cout<<"Enter the size of the matrices in order of row and columns\n";
 
   for(int i=0;i<n;i++) 
   {
@@ -86,6 +86,6 @@ int main()
       d[i]=a[i-1][1];
   }
 
-  Mat(d,n);
+  Matrix(d,n);
   return 0;
 }
