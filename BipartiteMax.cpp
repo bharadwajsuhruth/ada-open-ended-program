@@ -1,59 +1,67 @@
-#include<iostream>
+#include <iostream>
+#define MAX 10
 using namespace std;
 
-#define M 6
-#define N 6
+int graph[MAX][MAX], setA[MAX], setB[MAX];
+int vertA, vertB;
 
-bool Check(int a[][N],int m[],bool c[], int u) //Finds a vertice for set A to match with
-{
-  for(int i=0;i<N;i++)
-  {
-    if(a[u][i] && !c[i])
-    {
-      c[i]=true;
-      if(m[i]<0 || Check(a,m,c,m[i])) //Recursively calls the function to backtrack and find for other combinations
-      {
-        m[i]=u;
-        return true;
+bool bipartiteMatch(int u, bool *visited, int *check) {
+   for (int i = 0; i < vertA; i++) {
+      if (graph[u][i] && !visited[i]) {
+         visited[i] = true;
+         if (check[i] < 0 || bipartiteMatch(check[i], visited, check)) {
+            check[i] = u;
+            return true;
+         }
       }
-    }
-  }
-  return false;
+   }
+   return false;
 }
 
-int BMC(int a[][N])
-{
-    int match[N],result=0;
-    bool check[N]; //Array to keep track whether the vertices in set B have been checked for respective set A vertice
+int maxMatch() {
+    int check[vertA];
+    bool visited[vertA];
 
-    for(int i=0;i<N;i++)
-    {
-      match[i]=-1;
-      check[i]=false;
+    for(int i = 0; i<vertA; i++){
+        check[i] = -1;
     }
 
-    for(int i=0;i<M;i++) //Tries to find a match for every vertice in set A
-    {
-      if(Check(a,match,check,i))
-        result++;
-    }
+    int result = 0;
 
-    return result;
+     for (int u=0; u<vertB; u++) {
+        for(int i=0; i<vertA; i++) visited[i] = false;
+        if(bipartiteMatch(u, visited, check)) result++;
+     }
+
+     cout<<"Matched vertices set = {";
+     for(int i=0; i<vertA; i++){
+        cout<<"("<<setA[i]<<", "<<setB[check[i]]<<")";
+        if(i != vertA-1) cout<<", ";
+     }
+     cout<<"}";
+     cout<<”\nMaximum number of matching: “;
+     return result;
 }
 
-int main()
-{
-    int a[M][N]; //M represents the number of vertices in set A and N in set B
-    cout<<"Enter the adjacency matrix\n";
+int main() {
 
-    for(int i=0;i<M;i++)
-    {
-        for(int j=0;j<N;j++)
-        {
-            cin>>a[i][j];
+    cout<<"Enter number of vertices in setA and setB of bipartite graph: ";
+    cin>>vertA>>vertB;
+
+    cout<<"Enter vertices of setA: ";
+    for(int i=0; i<vertA; i++) cin>>setA[i];
+
+    cout<<"Enter vertices of setB: ";
+    for(int i=0; i<vertB; i++) cin>>setB[i];
+
+    cout<<"Enter "<<vertA<<" x "<<vertB<<" adjacency matrix representing relationship between set (A -> B):\n";
+    for(int i=0; i<vertA; i++){
+        for(int j=0; j<vertB; j++){
+            cin>>graph[i][j];
         }
     }
 
-    cout<<BMC(a);
+    cout<<maxMatch();
+
     return 0;
 }
